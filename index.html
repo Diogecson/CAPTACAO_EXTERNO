@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cadastro de Contatos - Time Externo</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Cadastro de Contatos</h1>
+      <p>Registre contatos no Google Sheets com verificação de duplicidade.</p>
+    </header>
+
+    <section id="authSection">
+      <h2>Login</h2>
+      <div class="card">
+        <div class="row">
+          <label for="username">Usuário</label>
+          <input type="text" id="username" placeholder="Digite seu usuário" />
+        </div>
+        <div class="row">
+              <label for="password">Senha</label>
+              <div class="password-field">
+                <input type="password" id="password" placeholder="Digite sua senha" />
+                <button id="toggleLoginPassword" type="button" class="eye-btn" aria-label="Mostrar/ocultar senha">👁️</button>
+              </div>
+            </div>
+        <div class="row actions">
+          <button id="loginBtn">Entrar</button>
+          <button id="openRegisterBtn" type="button">Não tem conta? Cadastre-se</button>
+        </div>
+        <div id="loginMsg" class="msg"></div>
+      </div>
+
+      <div id="registerCard" class="card hidden">
+        <h3>Criar conta</h3>
+        <div class="row">
+          <label for="regName">Nome</label>
+          <input type="text" id="regName" placeholder="Seu nome completo" />
+        </div>
+        <div class="row">
+          <label for="regUsername">Usuário</label>
+          <input type="text" id="regUsername" placeholder="Escolha um usuário" />
+        </div>
+        <div class="row">
+              <label for="regPassword">Senha</label>
+              <div class="password-field">
+                <input type="password" id="regPassword" placeholder="Crie uma senha" />
+                <button id="toggleRegisterPassword" type="button" class="eye-btn" aria-label="Mostrar/ocultar senha">👁️</button>
+              </div>
+            </div>
+        <div class="row actions">
+          <button id="createAccountBtn">Criar conta</button>
+          <button id="backToLoginBtn" type="button">Voltar ao login</button>
+        </div>
+        <div id="registerMsg" class="msg"></div>
+      </div>
+    </section>
+
+    <section id="formSection" class="hidden">
+      <h2>Novo Contato</h2>
+      <div class="card">
+        <div class="row">
+          <label for="name">Nome</label>
+          <input type="text" id="name" placeholder="Nome completo" />
+        </div>
+        <div class="row">
+          <label for="phone">Telefone</label>
+          <input type="text" id="phone" placeholder="(DDD) 9XXXX-XXXX" />
+        </div>
+        <div class="row">
+          <label for="course">Curso</label>
+          <div id="cursos">
+            <select id="courseSelect">
+              <option value="" selected>Selecione um curso</option>
+              <option>Administração-Bacharelado-Presencial</option>
+              <option>Administração-Bacharelado-Educação a Distância - EAD</option>
+              <option>Administração-Bacharelado-Semipresencial</option>
+              <option>Análise e Desenvolvimento de Sistemas-Tecnólogo-Presencial</option>
+              <option>Análise e Desenvolvimento de Sistemas-Tecnólogo-Educação a Distância - EAD</option>
+              <option>Análise e Desenvolvimento de Sistemas-Tecnólogo-Semipresencial</option>
+              <option>Arquitetura e Urbanismo-Bacharelado-Presencial</option>
+              <option>Arquitetura e Urbanismo-Bacharelado-Educação a Distância - EAD</option>
+              <option>Arquitetura e Urbanismo-Bacharelado-Semipresencial</option>
+              <option>Biomedicina-Bacharelado-Presencial</option>
+              <option>Biomedicina-Bacharelado-Educação a Distância - EAD</option>
+              <option>Biomedicina-Bacharelado-Semipresencial</option>
+              <option>Ciência da Computação-Bacharelado-Presencial</option>
+              <option>Ciência de Dados-Tecnólogo-Educação a Distância - EAD</option>
+              <option>Ciências Contábeis-Bacharelado-Presencial</option>
+              <option>Ciências Contábeis-Bacharelado-Educação a Distância - EAD</option>
+              <option>Computação em Nuvem-Tecnólogo-Educação a Distância - EAD</option>
+              <option>Defesa Cibernética-Tecnólogo-Educação a Distância - EAD</option>
+              <option>Design de Interiores-Tecnólogo-Presencial</option>
+              <option>Design de Interiores-Tecnólogo-Educação a Distância - EAD</option>
+              <option>Design de Interiores-Tecnólogo-Semipresencial</option>
+              <option>Design Gráfico-Tecnólogo-Educação a Distância - EAD</option>
+              <option>Direito-Bacharelado-Presencial</option>
+              <option>Educação Física-Bacharelado-Presencial</option>
+              <option>Educação Física-Licenciatura-Presencial</option>
+              <option>Educação Física-Licenciatura-Educação a Distância - EAD</option>
+              <option>Educação Física-Bacharelado-Educação a Distância - EAD</option>
+              <option>Educação Física-Licenciatura-Semipresencial</option>
+              <option>Educação Física-Bacharelado-Semipresencial</option>
+              <option>Enfermagem-Bacharelado-Presencial</option>
+              <option>Engenharia Civil-Bacharelado-Presencial</option>
+              <option>Engenharia Civil-Bacharelado-Educação a Distância - EAD</option>
+              <option>Engenharia Civil-Bacharelado-Semipresencial</option>
+              <option>Engenharia de Computação-Bacharelado-Presencial</option>
+              <option>Engenharia da Computação-Bacharelado-Educação a Distância - EAD</option>
+              <option>Engenharia da Computação-Bacharelado-Semipresencial</option>
+              <option>Engenharia de Produção-Bacharelado-Presencial</option>
+              <option>Engenharia de Produção-Bacharelado-Educação a Distância - EAD</option>
+              <option>Engenharia de Produção-Bacharelado-Semipresencial</option>
+              <option>Engenharia Elétrica-Bacharelado-Presencial</option>
+              <option>Engenharia Elétrica-Bacharelado-Educação a Distância - EAD</option>
+              <option>Engenharia Elétrica-Bacharelado-Semipresencial</option>
+              <option>Estética e Cosmética-Tecnólogo-Presencial</option>
+              <option>Estética e Cosmética-Tecnólogo-Educação a Distância - EAD</option>
+              <option>Estética e Cosmética-Tecnólogo-Semipresencial</option>
+              <option>Farmácia-Bacharelado-Presencial</option>
+              <option>Farmácia-Bacharelado-Educação a Distância - EAD</option>
+              <option>Farmácia-Bacharelado-Semipresencial</option>
+              <option>Física-Licenciatura-Educação a Distância - EAD</option>
+              <option>Física-Licenciatura-Semipresencial</option>
+              <option>Fisioterapia-Bacharelado-Presencial</option>
+              <option>Fisioterapia-Bacharelado-Educação a Distância - EAD</option>
+              <option>Fisioterapia-Bacharelado-Semipresencial</option>
+              <option>Gestão Comercial-Tecnólogo-Educação a Distância - EAD</option>
+              <option>Gestão da Tecnologia da Informação-Tecnólogo-Presencial</option>
+              <option>Gestão da Tecnologia da Informação-Tecnólogo-Educação a Distância - EAD</option>
+              <option>Gestão da Tecnologia da Informação-Tecnólogo-Semipresencial</option>
+              <option>Gestão de Recursos Humanos-Tecnólogo-Presencial</option>
+              <option>Gestão de Recursos Humanos-Tecnólogo-Educação a Distância - EAD</option>
+              <option>Gestão de Recursos Humanos-Tecnólogo-Semipresencial</option>
+              <option>Gestão de Segurança Privada-Tecnólogo-Educação a Distância - EAD</option>
+              <option>Gestão de Segurança Pública-Tecnólogo-Educação a Distância - EAD</option>
+              <option>Gestão Financeira-Tecnólogo-Presencial</option>
+              <option>Gestão Financeira-Tecnólogo-Educação a Distância - EAD</option>
+              <option>Gestão Pública-Tecnólogo-Educação a Distância - EAD</option>
+              <option>Influenciador Digital-Tecnólogo-Educação a Distância - EAD</option>
+              <option>Inteligência Artificial-Tecnólogo-Presencial</option>
+              <option>Inteligência Artificial e Automação Digital-Tecnólogo-Educação a Distância - EAD</option>
+              <option>Logística-Tecnólogo-Presencial</option>
+              <option>Logística-Tecnólogo-Educação a Distância - EAD</option>
+              <option>Marketing-Tecnólogo-Presencial</option>
+              <option>Marketing-Tecnólogo-Educação a Distância - EAD</option>
+              <option>Marketing-Tecnólogo-Semipresencial</option>
+              <option>Marketing Digital-Tecnólogo-Educação a Distância - EAD</option>
+              <option>Marketing Digital-Tecnólogo-Semipresencial</option>
+              <option>Matemática-Licenciatura-Educação a Distância - EAD</option>
+              <option>Matemática-Licenciatura-Semipresencial</option>
+              <option>Nutrição-Bacharelado-Presencial</option>
+              <option>Nutrição-Bacharelado-Educação a Distância - EAD</option>
+              <option>Nutrição-Bacharelado-Semipresencial</option>
+              <option>Odontologia-Bacharelado-Presencial</option>
+              <option>Pedagogia-Licenciatura-Presencial</option>
+              <option>Pedagogia-Licenciatura-Educação a Distância - EAD</option>
+              <option>Pedagogia-Licenciatura-Semipresencial</option>
+              <option>Processos Gerenciais-(Gestão de Call Center)-Tecnólogo-Presencial</option>
+              <option>Processos Gerenciais-Tecnólogo-Educação a Distância - EAD</option>
+              <option>Psicologia-Bacharelado-Presencial</option>
+              <option>Psicopedagogia-Licenciatura-Educação a Distância - EAD</option>
+              <option>Psicopedagogia-Licenciatura-Semipresencial</option>
+              <option>Radiologia-Tecnólogo-Presencial</option>
+              <option>Radiologia-Tecnólogo-Educação a Distância - EAD</option>
+              <option>Radiologia-Tecnólogo-Semipresencial</option>
+              <option>Serviço Social-Bacharelado-Educação a Distância - EAD</option>
+              <option>Serviço Social-Bacharelado-Semipresencial</option>
+              <option>Sistemas de Informação-Bacharelado-Educação a Distância - EAD</option>
+              <option>Terapia Ocupacional-Bacharelado-Educação a Distância - EAD</option>
+              <option>Terapia Ocupacional-Bacharelado-Semipresencial</option>
+              <option value="OUTROS">OUTROS (OPÇÃO DE ESCREVER)</option>
+            </select>
+          </div>
+          <input type="text" id="course" placeholder="Curso do contato (OUTROS)" class="hidden" />
+        </div>
+        
+        <div class="row">
+          <label for="consultant">Consultor responsável</label>
+          <div id="consultores">
+            <select id="consultantSelect">
+              <option value="" selected>Selecione um consultor</option>
+              <option>Andreza</option>
+              <option>Beatriz</option>
+              <option>Dominik</option>
+              <option>Emilly</option>
+              <option>Pedro</option>
+              <option>Erica</option>
+              <option>Vanessa Faria</option>
+              <option value="Outro">Outro (com opção para escrever)</option>
+            </select>
+          </div>
+          <input type="text" id="consultant" placeholder="Nome do consultor (Outro)" class="hidden" />
+        </div>
+        <div class="row actions">
+          <button id="checkBtn">Verificar duplicidade</button>
+          <button id="submitBtn">Cadastrar</button>
+        </div>
+        <div id="formMsg" class="msg"></div>
+      </div>
+
+      <div id="duplicatePanel" class="card hidden">
+        <h3>Duplicidade detectada</h3>
+        <p>Este telefone já foi registrado.</p>
+        <ul id="duplicateDetails"></ul>
+        <p class="msg">Verifique se é o mesmo contato/curso.</p>
+      </div>
+    </section>
+
+    <section id="adminSection" class="card hidden">
+      <h3>Admin</h3>
+      <div class="actions">
+        <button id="loadListBtn">Carregar contatos</button>
+        <button id="connectGoogleBtn" title="Conectar OAuth ao Google">Conectar ao Google</button>
+        <span id="adminMsg" class="msg" aria-live="polite"></span>
+      </div>
+      <table id="contactsTable" class="hidden">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nome</th>
+            <th>Telefone</th>
+            <th>Curso</th>
+            <th>Consultor</th>
+            <th>Data</th>
+            <th>Usuário</th>
+            <th>Senha</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <footer>
+      <div id="userInfo" class="hidden"></div>
+      <button id="logoutBtn" class="hidden">Sair</button>
+    </footer>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

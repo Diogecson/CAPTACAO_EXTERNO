@@ -2,6 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
 const { google } = require('googleapis');
+const { sql } = require('@vercel/postgres');
 
 const SHEET_ID = process.env.GOOGLE_SHEETS_SPREADSHEET_ID || '';
 const SHEET_TITLE = process.env.GOOGLE_SHEETS_SHEET_TITLE || 'Contacts';
@@ -16,6 +17,23 @@ function normalizePhone(phone) { return (phone || '').replace(/\D+/g, ''); }
 
 function createOAuth2Client() { return new google.auth.OAuth2(OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET, OAUTH_REDIRECT_URI); }
 
+// ===== Banco de Dados (Vercel Postgres) =====
+async function ensureDbTables() {
+  if (!process.env.POSTGRES_URL) return; // apenas quando Postgres estiver configurado
+  await sql`CREATE TABLE IF NOT EXISTS contacts (
+    id SERIAL PRIMARY KEY,
+    name TEXT,
+    phone TEXT UNIQUE,
+    course TEXT,
+    consultant TEXT,
+    date TEXT,
+    usuario TEXT,
+    senha TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+  )`;
+}
+
+// ===== Google Sheets (fallback) =====
 async function getSheetsClient() {
   if (!SHEET_ID) throw new Error('GOOGLE_SHEETS_SPREADSHEET_ID não configurado');
   // Tenta usar JSON da Service Account via variável de ambiente
@@ -57,6 +75,11 @@ async function getSheetsClient() {
 
 async function ensureSheetHeaders() {
   try {
+    // Se Postgres estiver configurado, não há cabeçalhos a garantir
+    if (process.env.POSTGRES_URL) {
+      await ensureDbTables();
+      return;
+    }
     const sheets = await getSheetsClient();
     const range = `${SHEET_TITLE}!A1:G1`;
     const headers = ['NOME','TELEFONE','CURSO','CONSULTOR','DATA','USUARIO','SENHA'];
@@ -76,6 +99,13 @@ async function ensureSheetHeaders() {
 }
 
 async function readAllRows() {
+  if (process.env.POSTGRES_URL) {
+    await ensureDbTables();
+    const { rows } = await sql`SELECT name, phone, course, consultant, date, usuario, senha FROM contacts ORDER BY id ASC`;
+    const header = ['NOME','TELEFONE','CURSO','CONSULTOR','DATA','USUARIO','SENHA'];
+    const data = rows.map(r => [ r.name || '', r.phone || '', r.course || '', r.consultant || '', r.date || '', r.usuario || '', r.senha || '' ]);
+    return [header, ...data];
+  }
   const sheets = await getSheetsClient();
   const range = `${SHEET_TITLE}!A:G`;
   const resp = await sheets.spreadsheets.values.get({ spreadsheetId: SHEET_ID, range });
@@ -83,6 +113,22 @@ async function readAllRows() {
 }
 
 async function findByPhone(phoneDigits) {
+  if (process.env.POSTGRES_URL) {
+    await ensureDbTables();
+    const { rows } = await sql`SELECT name, phone, course, consultant, date, usuario, senha FROM contacts WHERE phone=${phoneDigits} LIMIT 1`;
+    if (!rows.length) return null;
+    const r = rows[0];
+    return {
+      rowIndex: 0,
+      name: r.name || '',
+      phone: r.phone || '',
+      course: r.course || '',
+      consultant: r.consultant || '',
+      date: r.date || '',
+      usuario: r.usuario || '',
+      senha: r.senha || '',
+    };
+  }
   const rows = await readAllRows();
   const hasHeader = rows.length && rows[0][0] === 'NOME';
   const startIndex = hasHeader ? 1 : 0;
@@ -106,6 +152,13 @@ async function findByPhone(phoneDigits) {
 }
 
 async function appendContact({ name, phone, course, consultant, usuario }) {
+  if (process.env.POSTGRES_URL) {
+    await ensureDbTables();
+    const now = new Date();
+    const ts = `${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
+    await sql`INSERT INTO contacts (name, phone, course, consultant, date, usuario, senha) VALUES (${name || ''}, ${normalizePhone(phone)}, ${course || ''}, ${consultant || ''}, ${ts}, ${usuario || ''}, ${''})`;
+    return;
+  }
   const sheets = await getSheetsClient();
   const now = new Date();
   const ts = `${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
@@ -122,6 +175,13 @@ async function appendContact({ name, phone, course, consultant, usuario }) {
 
 // Registra credenciais de usuário na planilha (USUARIO e SENHA)
 async function appendUserCredentials({ name, username, password }) {
+  if (process.env.POSTGRES_URL) {
+    await ensureDbTables();
+    const now = new Date();
+    const ts = `${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
+    await sql`INSERT INTO contacts (name, phone, course, consultant, date, usuario, senha) VALUES (${name || ''}, ${''}, ${''}, ${''}, ${ts}, ${username || ''}, ${password || ''})`;
+    return;
+  }
   const sheets = await getSheetsClient();
   const now = new Date();
   const ts = `${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
@@ -156,4 +216,5 @@ module.exports = {
   appendContact,
   appendUserCredentials,
   parseAuth,
+  ensureDbTables,
 };

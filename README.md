@@ -82,17 +82,16 @@ Uso interno. Ajuste conforme sua política.
 ## Deploy no Vercel
 - Conecte o repositório GitHub `Diogecson/CAPTACAO_EXTERNO` ao Vercel.
 - Defina variáveis de ambiente no projeto Vercel:
+  - `POSTGRES_URL` (recomendado; banco nativo Vercel Postgres)
   - `JWT_SECRET`
-  - `GOOGLE_SHEETS_SPREADSHEET_ID`
-  - `GOOGLE_SHEETS_SHEET_TITLE` (opcional, padrão `Contacts`)
-  - `GOOGLE_SERVICE_ACCOUNT_KEY_JSON` (cole o conteúdo completo do JSON da Service Account)
   - `ALLOW_PUBLIC_CONTACTS` (opcional; `true` permite uso sem login para verificar/cadastrar)
   - `ALLOW_PUBLIC_REGISTRATION` (opcional; `true` permite criar conta `viewer`)
-  - (Opcional) OAuth: `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, `GOOGLE_OAUTH_REDIRECT_URI` (use a URL do seu site)
+  - (Fallback) Google Sheets: `GOOGLE_SHEETS_SPREADSHEET_ID`, `GOOGLE_SHEETS_SHEET_TITLE` (padrão `Contacts`), `GOOGLE_SERVICE_ACCOUNT_KEY_JSON` OU OAuth (`GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, `GOOGLE_OAUTH_REDIRECT_URI`, `GOOGLE_OAUTH_TOKEN_JSON`).
 - A estrutura usa funções serverless em `api/` e arquivos estáticos em `public/`.
 - O arquivo `vercel.json` faz rewrites para servir `index.html`, `app.js` e `styles.css` na raiz.
 - Após configurar, o deploy ocorre automaticamente a cada push no `main`. Para deploy manual, use o dashboard da Vercel e clique em "Deploy".
 
 ### Observações
-- Em Vercel, uso recomendado: `GOOGLE_SERVICE_ACCOUNT_KEY_JSON` para acesso ao Sheets. OAuth é opcional; se usar, após a autorização copie os tokens retornados em `GOOGLE_OAUTH_TOKEN_JSON` nas variáveis de ambiente.
-- Persistência de arquivos em Vercel é efêmera; o registro de novos usuários é salvo localmente apenas em desenvolvimento. Em produção, mantenha usuários em `config/users.json` no repositório ou migre para um banco de dados.
+- Em produção, priorize `POSTGRES_URL`; se presente, o app usa Postgres e ignora Google Sheets.
+- Se optar por Google Sheets, use `GOOGLE_SERVICE_ACCOUNT_KEY_JSON` (Service Account) e compartilhe a planilha com o `client_email` como Editor. OAuth é opcional e exige `GOOGLE_OAUTH_TOKEN_JSON`.
+- Persistência de arquivos em Vercel é efêmera; não confie em arquivos gerados em runtime. Guarde usuários em `config/users.json` no repositório ou em banco de dados.

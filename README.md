@@ -78,3 +78,21 @@ Name | Phone | Email | Notes | RegisteredBy | RegisteredAt
 
 ## Licença
 Uso interno. Ajuste conforme sua política.
+
+## Deploy no Vercel
+- Conecte o repositório GitHub `Diogecson/CAPTACAO_EXTERNO` ao Vercel.
+- Defina variáveis de ambiente no projeto Vercel:
+  - `JWT_SECRET`
+  - `GOOGLE_SHEETS_SPREADSHEET_ID`
+  - `GOOGLE_SHEETS_SHEET_TITLE` (opcional, padrão `Contacts`)
+  - `GOOGLE_SERVICE_ACCOUNT_KEY_JSON` (cole o conteúdo completo do JSON da Service Account)
+  - `ALLOW_PUBLIC_CONTACTS` (opcional; `true` permite uso sem login para verificar/cadastrar)
+  - `ALLOW_PUBLIC_REGISTRATION` (opcional; `true` permite criar conta `viewer`)
+  - (Opcional) OAuth: `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, `GOOGLE_OAUTH_REDIRECT_URI` (use a URL do seu site)
+- A estrutura usa funções serverless em `api/` e arquivos estáticos em `public/`.
+- O arquivo `vercel.json` faz rewrites para servir `index.html`, `app.js` e `styles.css` na raiz.
+- Após configurar, o deploy ocorre automaticamente a cada push no `main`. Para deploy manual, use o dashboard da Vercel e clique em "Deploy".
+
+### Observações
+- Em Vercel, uso recomendado: `GOOGLE_SERVICE_ACCOUNT_KEY_JSON` para acesso ao Sheets. OAuth é opcional; se usar, após a autorização copie os tokens retornados em `GOOGLE_OAUTH_TOKEN_JSON` nas variáveis de ambiente.
+- Persistência de arquivos em Vercel é efêmera; o registro de novos usuários é salvo localmente apenas em desenvolvimento. Em produção, mantenha usuários em `config/users.json` no repositório ou migre para um banco de dados.

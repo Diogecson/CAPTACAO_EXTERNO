@@ -1,0 +1,48 @@
+[
+  {
+    "username": "admin",
+    "password": "admin123",
+    "name": "Admin",
+    "role": "admin"
+  },
+  {
+    "username": "ana",
+    "password": "ana123",
+    "name": "Ana Silva",
+    "role": "editor"
+  },
+  {
+    "username": "carlos",
+    "password": "carlos123",
+    "name": "Carlos Souza",
+    "role": "viewer"
+  },
+  {
+    "username": "soares",
+    "password": "123456",
+    "name": "Soares",
+    "role": "viewer",
+    "createdAt": "2025-10-19T18:19:50.448Z"
+  },
+  {
+    "username": "DG0210",
+    "password": "DHOL0210",
+    "name": "Soares",
+    "role": "viewer",
+    "createdAt": "2025-10-19T18:43:54.229Z"
+  },
+  {
+    "username": "diogecson",
+    "password": "123456",
+    "name": "DIOGECSON",
+    "role": "viewer",
+    "createdAt": "2025-10-19T18:48:30.530Z"
+  },
+  {
+    "username": "usuario.teste",
+    "password": "123456",
+    "name": "Usu�rio Teste",
+    "role": "viewer",
+    "createdAt": "2025-10-19T19:03:58.639Z"
+  }
+]
